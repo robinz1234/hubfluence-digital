@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hf-bg: #000000;
+  --hf-surface: #050505;
+  --hf-card: #0b0b0b;
+
+  --hf-primary: #38959D;
+  --hf-accent: #31C2B8;
+
+  --hf-text: #F8FAFC;
+  --hf-muted: #94A3B8;
+  --hf-light: #CAD9DA;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Unbounded', sans-serif;
+  background: var(--hf-bg);
+}
+
+body {
+  background: var(--hf-bg);
+  color: var(--hf-text);
+}
+
+h1, h2, h3 {
+  font-family: 'Unbounded', sans-serif;
+}
+
+/* Navbar */
+.p-menubar {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.75) !important;
+  border: 1px solid rgba(49, 194, 184, 0.18) !important;
+  backdrop-filter: blur(10px);
+}
+
+.p-menubar .p-menuitem-link {
+  color: var(--hf-light) !important;
+}
+
+.p-menubar .p-menuitem-link:hover {
+  color: var(--hf-accent) !important;
+}
+
+/* Cards */
+.p-card {
+  border-radius: 1rem;
+  transition: transform 0.2s;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(56, 149, 157, 0.18) !important;
+  color: var(--hf-text) !important;
+}
+
+.p-card:hover {
+  transform: translateY(-5px);
+}
+
+.p-card-title,
+.p-card-caption,
+.p-menubar-start,
+.p-menubar-end,
+.footer-logo {
+  font-family: 'Unbounded', sans-serif;
+}
+
+/* PrimeVue inputs (THIS FIXES YOUR CONTACT FORM) */
+.p-inputtext,
+.p-inputtextarea {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--hf-text) !important;
+  caret-color: var(--hf-text) !important;
+  border: 1px solid rgba(56, 149, 157, 0.35) !important;
+  border-radius: 0.75rem !important;
+}
+
+.p-inputtext::placeholder,
+.p-inputtextarea::placeholder {
+  color: rgba(202, 217, 218, 0.65) !important;
+}
+
+.p-inputtext:enabled:focus,
+.p-inputtextarea:enabled:focus {
+  outline: none !important;
+  border-color: rgba(49, 194, 184, 0.75) !important;
+  box-shadow: 0 0 0 0.2rem rgba(49, 194, 184, 0.22) !important;
+}
+
+/* Optional: make textarea feel nicer */
+.p-inputtextarea {
+  min-height: 140px;
+}
+
+/* Keep this if any old class uses it */
+.bg-yellow\/80 {
+  background-color: #EBED9E;
+}
