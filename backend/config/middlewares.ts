@@ -8,7 +8,9 @@ export default [
       origin: [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://YOUR-FRONTEND-URL.onrender.com"
+
+        // Replace this with your Render frontend Static Site URL
+        "https://YOUR_FRONTEND_URL_HERE",
       ],
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       headers: ["Content-Type", "Authorization", "Origin", "Accept"],
