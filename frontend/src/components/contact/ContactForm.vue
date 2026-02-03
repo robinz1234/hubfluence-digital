@@ -74,52 +74,101 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { createMessage } from '@/lib/strapi';
+import { reactive, ref } from "vue";
 
+/**
+ * IMPORTANT:
+ * Put your backend base URL in frontend/.env like:
+ * VITE_STRAPI_URL=http://localhost:1337
+ * For production build on Render, set it to your Render backend URL.
+ *
+ * This component will post to: `${VITE_STRAPI_URL}/api/messages`
+ */
+const STRAPI_BASE_URL = (import.meta.env.VITE_STRAPI_URL || "").replace(/\/+$/, "");
+
+// Form state
 const form = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  subject: '',
-  message: ''
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
 });
 
 const loading = ref(false);
-const error = ref('');
+const error = ref("");
 const success = ref(false);
 
+// Helper: POST message to Strapi (public create)
+const createMessagePublic = async (payload) => {
+  if (!STRAPI_BASE_URL) {
+    throw new Error("VITE_STRAPI_URL is missing in frontend/.env");
+  }
+
+  const res = await fetch(`${STRAPI_BASE_URL}/api/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // Strapi expects { data: {...} }
+    body: JSON.stringify({ data: payload }),
+  });
+
+  // If forbidden, it means Public role does not have create permission
+  if (res.status === 403) {
+    const text = await res.text();
+    throw new Error(
+      `403 Forbidden. Enable Public permission: Message -> create. Server says: ${text}`
+    );
+  }
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Request failed (${res.status}). Server says: ${text}`);
+  }
+
+  return res.json();
+};
+
 const submit = async () => {
-  error.value = '';
+  error.value = "";
   success.value = false;
 
-  if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
-    error.value = 'Please fill in name, email, subject, and message.';
+  if (
+    !form.name.trim() ||
+    !form.email.trim() ||
+    !form.subject.trim() ||
+    !form.message.trim()
+  ) {
+    error.value = "Please fill in name, email, subject, and message.";
     return;
   }
 
   loading.value = true;
 
   try {
-    await createMessage({
+    await createMessagePublic({
       name: form.name.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
       subject: form.subject.trim(),
       message: form.message.trim(),
-      messageStatus: 'new'
+      // keep this only if your Message content-type has this field
+      messageStatus: "new",
     });
 
     success.value = true;
 
-    form.name = '';
-    form.email = '';
-    form.phone = '';
-    form.subject = '';
-    form.message = '';
+    form.name = "";
+    form.email = "";
+    form.phone = "";
+    form.subject = "";
+    form.message = "";
   } catch (e) {
     console.error(e);
-    error.value = 'Failed to send message. Check Strapi Public permission for Message: create.';
+    error.value =
+      e?.message ||
+      "Failed to send message. Check Strapi Public permission for Message: create.";
   } finally {
     loading.value = false;
   }
