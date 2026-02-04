@@ -3,20 +3,21 @@ const RAW_BASE =
   "http://localhost:1337";
 
 // remove trailing slash so we do not create //api/...
-const STRAPI_URL = RAW_BASE.replace(/\/+$/, "");
+export const STRAPI_URL = RAW_BASE.replace(/\/+$/, "");
 
 const joinUrl = (base, path) => {
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${base}${p}`;
 };
 
-const toAbsoluteUrl = (url) => {
+export const toAbsoluteUrl = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
   return joinUrl(STRAPI_URL, url);
 };
 
-const fetchJson = async (path, options = {}) => {
+// ✅ EXPORT this, so Home.vue / Services.vue can import it
+export const fetchJson = async (path, options = {}) => {
   const url = joinUrl(STRAPI_URL, path);
 
   const res = await fetch(url, {
@@ -24,7 +25,6 @@ const fetchJson = async (path, options = {}) => {
     ...options,
   });
 
-  // Try to read body as text first so we can show a helpful error
   const text = await res.text().catch(() => "");
 
   let json = null;
@@ -62,8 +62,6 @@ export const getGlobalSetting = async () => {
       const data = json?.data;
       if (!data) return null;
 
-      // v4 single type: { data: { id, attributes: {...} } }
-      // v5 can be:      { data: { id, ...fields } }
       const attributes = data?.attributes ? data.attributes : data;
 
       const logoCandidate =
@@ -92,7 +90,6 @@ export const getGlobalSetting = async () => {
 };
 
 export const createMessage = async (payload) => {
-  // POST should work publicly after you allow permissions in Strapi
   return fetchJson("/api/messages", {
     method: "POST",
     body: JSON.stringify({ data: payload }),

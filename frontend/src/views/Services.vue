@@ -31,7 +31,7 @@
 import { ref, onMounted } from "vue";
 import PageHeader from "@/components/shared/PageHeader.vue";
 import ServiceCard from "@/components/services/ServiceCard.vue";
-import { fetchJson } from "@/lib/strapi"; // ✅ use env-based Strapi URL
+import { fetchJson } from "@/lib/strapi";
 
 const services = ref([]);
 const loading = ref(true);
@@ -44,23 +44,24 @@ const normalizeIcon = (iconName) => {
   return iconName;
 };
 
+const pickAttrs = (item) => (item?.attributes ? item.attributes : item);
+
 const fetchServices = async () => {
   loading.value = true;
   error.value = "";
 
   try {
-    // ✅ uses VITE_STRAPI_URL automatically
     const json = await fetchJson("/api/services?populate=*");
-    const items = Array.isArray(json.data) ? json.data : [];
+    const items = Array.isArray(json?.data) ? json.data : [];
 
     services.value = items
-      .map((item) => {
-        const a = item?.attributes ? item.attributes : item; // supports v4/v5
+      .map((it) => {
+        const a = pickAttrs(it);
         return {
-          icon: normalizeIcon(a?.iconName || ""),
+          icon: normalizeIcon(a?.iconName || a?.icon || ""),
           title: a?.title || "",
-          description: a?.shortDescription || "",
-          features: [],
+          description: a?.shortDescription || a?.description || "",
+          features: Array.isArray(a?.features) ? a.features : [],
           order: a?.order ?? 999,
         };
       })
@@ -68,7 +69,7 @@ const fetchServices = async () => {
   } catch (e) {
     console.error(e);
     error.value =
-      "Could not load services. Make sure Strapi is running and Public permissions allow Service: find.";
+      "Could not load services. Check VITE_STRAPI_URL on Render, and Strapi Public role permission for Services: find.";
     services.value = [];
   } finally {
     loading.value = false;

@@ -89,7 +89,7 @@
       </div>
     </section>
 
-    <!-- Portfolio Preview (Synced with new Portfolio page: Video instead of projects) -->
+    <!-- Portfolio Preview -->
     <section id="portfolio" class="py-20 bg-black">
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
@@ -116,7 +116,6 @@
               Your browser does not support the video tag.
             </video>
 
-            <!-- Floating Play/Pause Button -->
             <button
               type="button"
               @click.stop="togglePlay"
@@ -183,19 +182,17 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import ServiceCard from "@/components/services/ServiceCard.vue";
-import { fetchJson } from "@/lib/strapi"; // ✅ use env-based Strapi URL
+import { fetchJson } from "@/lib/strapi";
 
 const services = ref([]);
 const servicesLoading = ref(true);
 const servicesError = ref("");
 
-/* Video state for homepage portfolio preview */
 const videoEl = ref(null);
 const isPlaying = ref(false);
 
 const togglePlay = async () => {
   if (!videoEl.value) return;
-
   try {
     if (videoEl.value.paused) {
       await videoEl.value.play();
@@ -220,23 +217,24 @@ const normalizeIcon = (iconName) => {
   return iconName;
 };
 
+const pickAttrs = (item) => (item?.attributes ? item.attributes : item);
+
 const fetchHomeServices = async () => {
   servicesLoading.value = true;
   servicesError.value = "";
 
   try {
-    // ✅ uses VITE_STRAPI_URL automatically
     const json = await fetchJson("/api/services?populate=*");
-    const items = Array.isArray(json.data) ? json.data : [];
+    const items = Array.isArray(json?.data) ? json.data : [];
 
     const mapped = items
-      .map((item) => {
-        const a = item?.attributes ? item.attributes : item; // supports v4/v5
+      .map((it) => {
+        const a = pickAttrs(it);
         return {
-          icon: normalizeIcon(a?.iconName || ""),
+          icon: normalizeIcon(a?.iconName || a?.icon || ""),
           title: a?.title || "",
-          description: a?.shortDescription || "",
-          features: [],
+          description: a?.shortDescription || a?.description || "",
+          features: Array.isArray(a?.features) ? a.features : [],
           order: a?.order ?? 999,
           featured: a?.featured === true,
         };
@@ -249,7 +247,7 @@ const fetchHomeServices = async () => {
     console.error(e);
     services.value = [];
     servicesError.value =
-      "Could not load services. Make sure Strapi is running and Public role allows Service: find.";
+      "Could not load services from Strapi. Check VITE_STRAPI_URL on Render, and Strapi Public role permission for Services: find.";
   } finally {
     servicesLoading.value = false;
   }
@@ -265,7 +263,7 @@ onMounted(fetchHomeServices);
 
 <style scoped>
 .custom-get-started {
-  background-color: #31c2b8 !important;
+  background-color: #31C2b8 !important;
   color: #000 !important;
   border: none !important;
   width: 160px;
@@ -292,7 +290,6 @@ onMounted(fetchHomeServices);
   color: #000 !important;
 }
 
-/* Video clarity */
 .video-fit {
   display: block;
   height: auto;
@@ -302,7 +299,6 @@ onMounted(fetchHomeServices);
   transform: translateZ(0);
 }
 
-/* Floating play/pause button */
 .video-fab {
   width: 52px;
   height: 52px;
