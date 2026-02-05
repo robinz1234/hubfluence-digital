@@ -1,23 +1,21 @@
 export default [
-  "strapi::logger",
   "strapi::errors",
   "strapi::security",
   {
     name: "strapi::cors",
     config: {
+      enabled: true,
       origin: [
-        "http://localhost:5173",
-        "http://localhost:3000",
-
-        // Replace this with your Render frontend Static Site URL
-        "https://YOUR_FRONTEND_URL_HERE",
+        "https://hubfluencedigital.com",
+        "https://www.hubfluencedigital.com",
       ],
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       headers: ["Content-Type", "Authorization", "Origin", "Accept"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       keepHeaderOnError: true,
     },
   },
   "strapi::poweredBy",
+  "strapi::logger",
   "strapi::query",
   "strapi::body",
   "strapi::session",
