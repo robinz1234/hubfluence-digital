@@ -6,6 +6,7 @@ export default [
     config: {
       enabled: true,
       origin: [
+        "https://hubfluence-digital-frontend.onrender.com",
         "https://hubfluencedigital.com",
         "https://www.hubfluencedigital.com",
       ],
