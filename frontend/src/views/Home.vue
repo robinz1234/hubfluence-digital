@@ -154,12 +154,31 @@
             <Button label="Learn More" icon="pi pi-arrow-right" severity="secondary" class="p-button-rounded" />
           </router-link>
         </div>
-        <div class="relative">
-          <img
-            src="/about-logo.svg"
-            alt="Our team"
-            class="rounded-2xl transform hover:scale-105 transition-transform duration-300"
-          />
+
+        <!-- REPLACED IMAGE WITH VIDEO -->
+        <div class="relative rounded-2xl overflow-hidden border border-[#38959D]/25 bg-black shadow-lg">
+          <video
+            ref="aboutVideoEl"
+            class="video-fit w-full"
+            src="/video/about.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            @click="toggleAboutPlay"
+          ></video>
+
+          <button
+            type="button"
+            @click.stop="toggleAboutPlay"
+            class="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-[#31C2B8] text-black shadow-lg video-fab"
+            :aria-label="isAboutPlaying ? 'Pause video' : 'Play video'"
+            title="Play/Pause"
+          >
+            <i v-if="!isAboutPlaying" class="pi pi-play"></i>
+            <i v-else class="pi pi-pause"></i>
+          </button>
         </div>
       </div>
     </section>
@@ -191,6 +210,9 @@ const servicesError = ref("");
 const videoEl = ref(null);
 const isPlaying = ref(false);
 
+const aboutVideoEl = ref(null);
+const isAboutPlaying = ref(true);
+
 const togglePlay = async () => {
   if (!videoEl.value) return;
   try {
@@ -208,6 +230,21 @@ const togglePlay = async () => {
 
 const handleEnded = () => {
   isPlaying.value = false;
+};
+
+const toggleAboutPlay = async () => {
+  if (!aboutVideoEl.value) return;
+  try {
+    if (aboutVideoEl.value.paused) {
+      await aboutVideoEl.value.play();
+      isAboutPlaying.value = true;
+    } else {
+      aboutVideoEl.value.pause();
+      isAboutPlaying.value = false;
+    }
+  } catch (e) {
+    console.error("About video play failed:", e);
+  }
 };
 
 const normalizeIcon = (iconName) => {
@@ -258,7 +295,14 @@ const navigateToSection = (id) => {
   if (element) element.scrollIntoView({ behavior: "smooth" });
 };
 
-onMounted(fetchHomeServices);
+onMounted(() => {
+  fetchHomeServices();
+
+  // If autoplay is blocked on some browsers, keep UI consistent.
+  if (aboutVideoEl.value) {
+    isAboutPlaying.value = !aboutVideoEl.value.paused;
+  }
+});
 </script>
 
 <style scoped>
