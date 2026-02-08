@@ -44,8 +44,8 @@
         <!-- Right Illustration -->
         <div class="relative">
           <img
-            src="/hero-img.svg"
-            alt="Creative workspace"
+            src="/group_pic.png"
+            alt="Team group photo"
             class="rounded-2xl transform hover:scale-105 transition-transform duration-300"
           />
           <!-- Decorative Elements -->
