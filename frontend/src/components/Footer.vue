@@ -1,7 +1,7 @@
 <template>
   <footer class="bg-[#050505] text-white py-12 border-t border-[#31C2B8]/20">
     <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <div class="flex items-center gap-3 mb-4">
             <img
@@ -30,39 +30,62 @@
         </div>
 
         <div>
-          <h3 class="font-bold mb-4 text-[#31C2B8]">Contact</h3>
-          <div class="space-y-2 text-[#94A3B8]">
-            <p v-if="global.email"><i class="pi pi-envelope mr-2 text-[#38959D]"></i>{{ global.email }}</p>
-            <p v-if="global.phone"><i class="pi pi-phone mr-2 text-[#38959D]"></i>{{ global.phone }}</p>
-            <p v-if="global.address"><i class="pi pi-map-marker mr-2 text-[#38959D]"></i>{{ global.address }}</p>
-          </div>
-        </div>
-
-        <div>
           <h3 class="font-bold mb-4 text-[#31C2B8]">Connect</h3>
+
           <div class="flex gap-4 text-[#94A3B8]">
-            <a v-if="global.facebookUrl" :href="global.facebookUrl" target="_blank" class="hover:text-[#31C2B8]">
+            <!-- Facebook -->
+            <a
+              href="https://www.facebook.com/share/1GHjboxdgE/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-[#31C2B8]"
+              aria-label="Facebook"
+              title="Facebook"
+            >
               <i class="pi pi-facebook text-xl"></i>
             </a>
-            <a v-if="global.instagramUrl" :href="global.instagramUrl" target="_blank" class="hover:text-[#31C2B8]">
+
+            <!-- Instagram -->
+            <a
+              href="https://www.instagram.com/hubfluence.digital?igsh=M2cxaWYwbDYweW8w"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-[#31C2B8]"
+              aria-label="Instagram"
+              title="Instagram"
+            >
               <i class="pi pi-instagram text-xl"></i>
             </a>
-            <a v-if="global.linkedinUrl" :href="global.linkedinUrl" target="_blank" class="hover:text-[#31C2B8]">
-              <i class="pi pi-linkedin text-xl"></i>
+
+            <!-- Call -->
+            <a
+              href="tel:+8801345061575"
+              class="hover:text-[#31C2B8]"
+              aria-label="Call +8801345061575"
+              title="Call +8801345061575"
+            >
+              <i class="pi pi-phone text-xl"></i>
             </a>
           </div>
         </div>
       </div>
 
-      <div class="border-t border-[#31C2B8]/20 mt-8 pt-8 text-center text-[#94A3B8]">
-        <p>&copy; {{ year }} {{ global.companyName || 'Hubfluence Digital' }}. All rights reserved.</p>
+      <div class="border-t border-[#31C2B8]/20 mt-8 pt-8 relative text-center text-[#94A3B8]">
+        <p>&copy; 2025 {{ global.companyName || 'Hubfluence Digital' }}. All rights reserved.</p>
+
+        <span
+          class="absolute right-0 bottom-0 text-[11px] text-white/20 select-none"
+          style="pointer-events: none;"
+        >
+          Developed by Tajwar AL Haque Robin
+        </span>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getGlobalSetting } from '@/lib/strapi';
 
 const global = ref({
@@ -76,8 +99,6 @@ const global = ref({
   linkedinUrl: '',
   logoUrl: ''
 });
-
-const year = computed(() => new Date().getFullYear());
 
 onMounted(async () => {
   try {
