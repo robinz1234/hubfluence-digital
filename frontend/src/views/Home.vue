@@ -44,7 +44,7 @@
         <!-- Right Illustration -->
         <div class="relative">
           <img
-            src="/group_pic.png"
+            src="/team_pic.png"
             alt="Team group photo"
             class="rounded-2xl transform hover:scale-105 transition-transform duration-300"
           />
